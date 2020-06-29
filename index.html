@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #population,
+        .crossover,
+        .offspring {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .img {
+            position: relative;
+        }
+
+        .bunny {
+            background-image: url('./bunny/bunny.png');
+            width: 100px;
+            height: 100px;
+            background-size: contain;
+        }
+
+        .spots {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        .brown {
+            background-image: url('./bunny/brown.png');
+            width: 100px;
+            height: 100px;
+            background-size: contain;
+        }
+
+        .light-brown {
+            background-image: url('./bunny/light_brown.png');
+            width: 100px;
+            height: 100px;
+            background-size: contain;
+        }
+
+        .grey {
+            background-image: url('./bunny/grey.png');
+            width: 100px;
+            height: 100px;
+            background-size: contain;
+        }
+
+        .small-black {
+            background-image: url('./bunny/small_black.png');
+            width: 100px;
+            height: 100px;
+            background-size: contain;
+        }
+
+        .small-orange {
+            background-image: url('./bunny/small_orange.png');
+            width: 100px;
+            height: 100px;
+            background-size: contain;
+        }
+
+        .break {
+            flex-basis: 100%;
+            height: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="population">
+    </div>
+    <!-- <div id="crossover">
+    </div> -->
+    <script src="./genetic.js"></script>
+    <!-- <div class="bunny img">
+        <div class="spots brown"></div>
+    </div>
+    <div class="bunny img">
+        <div class="spots light-brown"></div>
+    </div>
+    <div class="bunny img">
+        <div class="spots grey"></div>
+    </div>
+    <div class="bunny img">
+        <div class="spots small-black"></div>
+    </div> -->
+</body>
+<script>
+    const genes = ['brown', 'light-brown', 'grey']
+    const population = generatePopulation(10)
+
+    function createBunny(population, targetDom, concat) {
+        let addedPlus = false
+        for (let individual of population) {
+            const bunny = document.createElement('div')
+
+            bunny.classList.add('bunny')
+            bunny.classList.add('img')
+
+            //------------------------------
+            for (let i = 0; i < individual.genes.length; i++) {
+                if (!individual.genes[i]) continue
+
+                const spots = document.createElement('div')
+                spots.classList.add('spots')
+                spots.classList.add(genes[i])
+                bunny.appendChild(spots)
+            }
+
+            if(individual.fitnessScore === individual.genes.length) bunny.style.backgroundColor = '#afe7b9'
+            targetDom.appendChild(bunny)
+
+            if (concat && !addedPlus) {
+                const plusElement = document.createElement('div')
+                plusElement.style.lineHeight = '100px'
+                plusElement.textContent = '+'
+                addedPlus = true
+                targetDom.appendChild(plusElement)
+            } else if (concat && addedPlus) {
+                const plusElement = document.createElement('div')
+                plusElement.style.lineHeight = '100px'
+                plusElement.textContent = '='
+                addedPlus = true
+                targetDom.appendChild(plusElement)
+            }
+
+        }
+    }
+
+    // genes
+    // brown, light-brown, grey, small-black, small-orange
+    // 111111 || 000000
+    // createBunny(population, document.getElementById('population'))
+
+
+
+    evolve(population, (offspring) => {
+        const crossoverElements = document.querySelectorAll('.crossover')
+        const crossoverElement = crossoverElements[crossoverElements.length-1]
+
+        const offspringElement = document.createElement('div')
+        offspringElement.classList.add('offspring')
+        const el = crossoverElement.appendChild(offspringElement)
+        createBunny(offspring, el)
+        // const breakElement = document.createElement('div')
+        // breakElement.classList.add('break')
+        // document.getElementById('offspring').appendChild(breakElement)
+
+    })
+</script>
+
+</html>
